@@ -10,7 +10,9 @@ async fn main() {
         y: 20.0,
         size: 10.0,
         speed: 5.0,
-        rot: 0.0,
+        angle: 0.0,
+        delta_x: 0.0,
+        delta_y: 0.0,
         color: YELLOW,
     };
 
@@ -18,10 +20,11 @@ async fn main() {
 
     loop {
         input(&mut player);
+        player.update();
         map.update();
 
         draw_map(&map);
-        draw_circle(player.x, player.y, player.size, player.color);
+        draw_player(&player);
         next_frame().await
     }
 }
@@ -39,20 +42,56 @@ fn draw_map(map: &Map) {
                 );
             }
         }
+
+        draw_line(
+            0.0,
+            y as f32 * map.size - 1.0,
+            map.size * map.width as f32,
+            y as f32 * map.size - 1.0,
+            2.0,
+            DARKGRAY,
+        );
+    }
+
+    for y in 0..map.height {
+        draw_line(
+            y as f32 * map.size - 1.0,
+            0.0,
+            y as f32 * map.size - 1.0,
+            map.size * map.height as f32,
+            2.0,
+            DARKGRAY,
+        );
     }
 }
 
+fn draw_player(player: &Player) {
+    draw_circle(player.x, player.y, player.size, player.color);
+    //draw pointer
+    draw_line(
+        player.x,
+        player.y,
+        player.x + player.delta_x as f32,
+        player.y + player.delta_y as f32,
+        1.0,
+        RED,
+    );
+
+} 
+
 fn input(player: &mut Player) {
     if is_key_down(KeyCode::W) {
-        player.y -= player.speed;
+        player.x += player.delta_x as f32 / 3.0;
+        player.y += player.delta_y as f32 / 3.0;
     }
     if is_key_down(KeyCode::S) {
-        player.y += player.speed;
+        player.x -= player.delta_x as f32 / 3.0;
+        player.y -= player.delta_y as f32 / 3.0;
     }
     if is_key_down(KeyCode::A) {
-        player.x -= player.speed;
+        player.angle += 0.2;
     }
     if is_key_down(KeyCode::D) {
-        player.x += player.speed;
+        player.angle -= 0.2;
     }
 }
