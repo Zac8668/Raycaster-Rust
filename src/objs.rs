@@ -3,7 +3,6 @@ pub mod objects {
     const PI: f64 = std::f64::consts::PI;
 
     use macroquad::color::Color;
-    use macroquad::prelude::screen_height;
 
     pub struct Player {
         pub x: f32,
@@ -11,6 +10,9 @@ pub mod objects {
         pub angle: f64,
         pub delta_x: f64,
         pub delta_y: f64,
+        pub render_distance: usize,
+        pub fov: usize,
+        pub rays: usize,
         pub size: f32,
         pub speed: f32,
         pub color: Color,
@@ -18,8 +20,8 @@ pub mod objects {
 
     impl Player {
         pub fn update(&mut self) {
-            self.delta_x = self.angle.sin() * (self.size * 2.5) as f64;
-            self.delta_y = self.angle.cos() * (self.size * 2.5) as f64;
+            self.delta_x = self.angle.cos() * (self.size * 2.5) as f64;
+            self.delta_y = self.angle.sin() * (self.size * 2.5) as f64;
 
             if self.angle <= 0.0 {
                 self.angle += 2.0 * PI;
@@ -56,10 +58,6 @@ pub mod objects {
                 size,
                 grid,
             }
-        }
-
-        pub fn update(&mut self) {
-            self.size = screen_height() / self.height as f32;
         }
     }
 }
