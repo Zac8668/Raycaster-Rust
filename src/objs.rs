@@ -1,6 +1,6 @@
 pub mod objects {
+    use std::f64::consts::PI;
     use std::usize;
-    const PI: f64 = std::f64::consts::PI;
 
     use macroquad::color::Color;
 
@@ -16,6 +16,7 @@ pub mod objects {
         pub size: f32,
         pub speed: f32,
         pub color: Color,
+        pub show_map: bool
     }
 
     impl Player {
@@ -39,24 +40,17 @@ pub mod objects {
     }
 
     impl Map {
-        pub fn new(width: usize, height: usize, size: f32) -> Self {
-            let grid = vec![
-                /*[vec![1; width]; height];*/
-                vec![1, 1, 1, 1, 1, 1, 1, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 0, 0, 0, 0, 0, 0, 1],
-                vec![1, 1, 1, 1, 1, 1, 1, 1],
-            ];
+        pub fn new(width: usize, height: usize, size: f32, grid: Option<Vec<Vec<i8>>>) -> Self {
+            let mut grid = grid;
 
+            if grid.is_none() {
+                grid = Some(vec![vec![0_i8; width]; height]);
+            }
             Self {
                 width,
                 height,
                 size,
-                grid,
+                grid: grid.unwrap(),
             }
         }
     }
